@@ -1,0 +1,36 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library", "kt_jvm_import")
+
+CUSTOM_PACKAGE = "jp.cordea.androidbazel"
+MANIFEST = "src/main/AndroidManifest.xml"
+
+kt_android_library(
+        name = "src",
+        srcs = glob(["src/main/java/**/*.kt"]),
+        custom_package = CUSTOM_PACKAGE,
+        resource_files = glob(["src/main/res/**/*"]),
+        manifest = MANIFEST,
+        deps = [
+                artifact("org.jetbrains.kotlin:kotlin-stdlib-jdk7"),
+                artifact("androidx.appcompat:appcompat"),
+                artifact("androidx.core:core-ktx"),
+                artifact("androidx.constraintlayout:constraintlayout"),
+                artifact("com.google.android.material:material")
+        ],
+        plugins = [
+                artifact("com.android.tools.build:gradle"),
+                artifact("org.jetbrains.kotlin:kotlin-gradle-plugin"),
+        ],
+)
+
+android_binary(
+        name = "AndroidBazel",
+        custom_package = CUSTOM_PACKAGE,
+        manifest = MANIFEST,
+        manifest_values = {
+                "minSdkVersion": "26"
+        },
+        deps = [
+                ":src"
+        ],
+)
